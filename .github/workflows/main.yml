@@ -1,9 +1,9 @@
 name: GAU URL Finder
 
 on:
-  workflow_dispatch:     # Manual run
+  workflow_dispatch:
   push:
-    branches: [ main ]   # OR choose what you want
+    branches: [ main ]
 
 jobs:
   run-gau:
@@ -22,6 +22,7 @@ jobs:
 
     - name: Run GAU scan + extract matches
       run: |
+        cd $GITHUB_WORKSPACE
         echo "http" \
         | gau --providers wayback,commoncrawl,urlscan,otx \
         | sort -u \

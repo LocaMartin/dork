@@ -1,0 +1,34 @@
+name: GAU URL Finder
+
+on:
+  workflow_dispatch:     # Manual run
+  push:
+    branches: [ main ]   # OR choose what you want
+
+jobs:
+  run-gau:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install gau
+      run: |
+        sudo apt update
+        sudo apt install -y golang
+        go install github.com/lc/gau/v2/cmd/gau@latest
+        echo "$HOME/go/bin" >> $GITHUB_PATH
+
+    - name: Run GAU scan + extract matches
+      run: |
+        echo "http" \
+        | gau --providers wayback,commoncrawl,urlscan,otx \
+        | sort -u \
+        | grep -Ff paths.txt | tee matched-urls.txt
+
+    - name: Upload matched URLs
+      uses: actions/upload-artifact@v4
+      with:
+        name: matched-urls
+        path: matched-urls.txt

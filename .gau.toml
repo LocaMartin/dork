@@ -1,0 +1,3 @@
+providers=["wayback","commoncrawl","urlscan","otx"]
+threads=50
+timeout=45
